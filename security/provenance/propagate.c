@@ -37,7 +37,7 @@ static int in_edge(prov_entry_t *edge, prov_entry_t *node)
 	return 0;
 }
 
-struct provenance_query_hooks hooks = {
+static struct provenance_query_hooks hooks = {
 	QUERY_HOOK_INIT(out_edge, out_edge),
 	QUERY_HOOK_INIT(in_edge,  in_edge),
 };

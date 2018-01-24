@@ -17,14 +17,15 @@
 
 static int out_edge(prov_entry_t *node, prov_entry_t *edge)
 {
-	uint64_t hash[2];
+	uint64_t hash[3];
 
 	get_prov_hash(node) = djb2_hash_n(get_prov_identifier(node).buffer,
 																		sizeof(union prov_identifier));
 	hash[0] = get_prov_hash(node);
-	hash[1] = djb2_hash_n(get_prov_identifier(edge).buffer,
+	hash[1] = djb2_hash_n(get_prov_hash_in(node), PROV_N_BYTES);
+	hash[2] = djb2_hash_n(get_prov_identifier(edge).buffer,
 												sizeof(union prov_identifier));
-	get_prov_hash(edge) = djb2_hash_n((uint8_t*)hash, 2*sizeof(uint64_t));
+	get_prov_hash(edge) = djb2_hash_n((uint8_t*)hash, 3*sizeof(uint64_t));
 	return 0;
 }
 

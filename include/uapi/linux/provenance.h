@@ -164,6 +164,7 @@ static inline bool prov_bloom_empty(const uint8_t bloom[PROV_N_BYTES])
 #define prov_taint(prov) ((prov)->msg_info.taint)
 #define prov_jiffies(prov) ((prov)->msg_info.jiffies)
 #define get_prov_hash(prov) ((prov)->msg_info.hash)
+#define get_prov_hash_in(prov) ((prov)->msg_info.hash_in)
 
 struct node_identifier {
 	uint64_t type;
@@ -239,7 +240,7 @@ union prov_identifier {
 #define clear_is_long(node)						prov_clear_flag(node, LONG_BIT)
 #define provenance_is_long(node)			prov_check_flag(node, LONG_BIT)
 
-#define basic_elements union prov_identifier identifier; uint8_t flag; uint64_t jiffies; uint32_t secid; uint32_t uid; uint32_t gid; uint8_t taint[PROV_N_BYTES];	uint64_t hash; void *var_ptr
+#define basic_elements union prov_identifier identifier; uint8_t flag; uint64_t jiffies; uint32_t secid; uint32_t uid; uint32_t gid; uint8_t taint[PROV_N_BYTES];	uint64_t hash; uint8_t hash_in[PROV_N_BYTES]; void *var_ptr
 
 struct msg_struct {
 	basic_elements;

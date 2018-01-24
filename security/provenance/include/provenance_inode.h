@@ -349,6 +349,7 @@ static inline int close_inode(struct provenance *iprov)
 	clear_recorded(prov_elt(iprov));
 
 	rc = write_relation(RL_CLOSED, &old_prov, prov_elt(iprov), NULL, 0);
+	__write_node((prov_entry_t*)prov_elt(iprov));
 	iprov->has_outgoing = false;
 	return rc;
 }

@@ -170,7 +170,7 @@ static inline int write_relation(const uint64_t type,
 
 	rc = call_query_hooks(f, t, (prov_entry_t*)&relation);
 	__write_node(f);
-	__write_node(t);
+	//__write_node(t);
 	prov_write(&relation);
 	return rc;
 }

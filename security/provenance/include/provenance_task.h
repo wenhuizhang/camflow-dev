@@ -322,6 +322,7 @@ static inline int terminate_task(struct provenance *tprov)
 	clear_recorded(prov_elt(tprov));
 
 	rc = write_relation(RL_TERMINATE_PROCESS, &old_prov, prov_elt(tprov), NULL, 0);
+	__write_node((prov_entry_t*)prov_elt(tprov));
 	tprov->has_outgoing = false;
 	return rc;
 }

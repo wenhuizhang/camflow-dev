@@ -10,11 +10,17 @@
  * or (at your option) any later version.
  *
  */
+#include <crypto/hash.h>
+
 #include "provenance.h"
 #include "provenance_query.h"
 
 static int out_edge(prov_entry_t *node, prov_entry_t *edge)
 {
+	get_prov_hash(node) = djb2_hash_n(get_prov_identifier(node).buffer,
+																		sizeof(union prov_identifier));
+	get_prov_hash(edge) = djb2_hash_n(get_prov_identifier(edge).buffer,
+																		sizeof(union prov_identifier));
 	return 0;
 }
 

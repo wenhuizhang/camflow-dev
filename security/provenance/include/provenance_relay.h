@@ -126,8 +126,6 @@ static inline void __write_node(prov_entry_t *node)
 	if ( provenance_is_long(node) ) {
 		long_prov_write(node);
 	} else {
-		if(!prov_is_packet(node))
-			node_identifier(node).machine_id = prov_machine_id;
 		prov_write((union prov_elt*)node);
 	}
 }
@@ -163,6 +161,13 @@ static inline int write_relation(const uint64_t type,
 		relation.relation_info.offset = file->f_pos;
 	}
 	relation.relation_info.flags = flags;
+
+	// we make sure the machine_id has properly been set
+	if(!prov_is_packet(f))
+		node_identifier(f).machine_id = prov_machine_id;
+	if(!prov_is_packet(t))
+		node_identifier(t).machine_id = prov_machine_id;
+
 	rc = call_query_hooks(f, t, (prov_entry_t*)&relation);
 	__write_node(f);
 	__write_node(t);

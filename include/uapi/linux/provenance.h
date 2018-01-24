@@ -58,6 +58,21 @@ static inline uint64_t djb2_hash(const char *str)
 	}
 	return hash;
 }
+
+// djb2 hash implementation by Dan Bernstein
+static inline uint64_t djb2_hash_n(const uint8_t *buf, size_t len)
+{
+	uint64_t hash = 5381;
+	int c = *buf;
+	int i = 0;
+
+	while (i < len) {
+		hash = ((hash<<5)+hash) + c;
+		c = *++buf;
+		i++;
+	}
+	return hash;
+}
 #define generate_label(str) djb2_hash(str)
 
 /* element in set belong to super */
@@ -148,6 +163,7 @@ static inline bool prov_bloom_empty(const uint8_t bloom[PROV_N_BYTES])
 #define prov_flag(prov) ((prov)->msg_info.flag)
 #define prov_taint(prov) ((prov)->msg_info.taint)
 #define prov_jiffies(prov) ((prov)->msg_info.jiffies)
+#define get_prov_hash(prov) ((prov)->msg_info.hash)
 
 struct node_identifier {
 	uint64_t type;
@@ -223,7 +239,7 @@ union prov_identifier {
 #define clear_is_long(node)						prov_clear_flag(node, LONG_BIT)
 #define provenance_is_long(node)			prov_check_flag(node, LONG_BIT)
 
-#define basic_elements union prov_identifier identifier; uint8_t flag; uint64_t jiffies; uint32_t secid; uint32_t uid; uint32_t gid; uint8_t taint[PROV_N_BYTES];	void *var_ptr
+#define basic_elements union prov_identifier identifier; uint8_t flag; uint64_t jiffies; uint32_t secid; uint32_t uid; uint32_t gid; uint8_t taint[PROV_N_BYTES];	uint64_t hash; void *var_ptr
 
 struct msg_struct {
 	basic_elements;

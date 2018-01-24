@@ -17,26 +17,30 @@
 
 static int out_edge(prov_entry_t *node, prov_entry_t *edge)
 {
-	uint64_t hash[3];
+	uint64_t hash[2];
 
 	get_prov_hash(node) = djb2_hash_n(get_prov_identifier(node).buffer,
 																		sizeof(union prov_identifier));
-	hash[0] = get_prov_hash(node);
-	hash[1] = djb2_hash_n(get_prov_hash_in(node), PROV_N_BYTES);
-	hash[2] = djb2_hash_n(get_prov_identifier(edge).buffer,
+	hash[0] = get_prov_hash_in(node);
+	hash[1] = djb2_hash_n(get_prov_identifier(edge).buffer,
 												sizeof(union prov_identifier));
-	get_prov_hash(edge) = djb2_hash_n((uint8_t*)hash, 3*sizeof(uint64_t));
+	get_prov_hash(edge) = djb2_hash_n((uint8_t*)hash, 2*sizeof(uint64_t));
 	return 0;
 }
 
 static int in_edge(prov_entry_t *edge, prov_entry_t *node)
 {
+	uint64_t hash[2];
+
 	get_prov_hash(node) = djb2_hash_n(get_prov_identifier(node).buffer,
 																		sizeof(union prov_identifier));
 	if( edge_type(edge) == RL_VERSION
-		|| edge_type(edge) == RL_VERSION_PROCESS)
-		memset(get_prov_hash_in(node), 0, PROV_N_BYTES);
-	prov_bloom_add(get_prov_hash_in(node), get_prov_hash(edge));
+		|| edge_type(edge) == RL_VERSION_PROCESS){
+		get_prov_hash_in(node) = get_prov_hash(node);
+	}
+	hash[0] = get_prov_hash_in(node);
+	hash[1] = get_prov_hash(edge);
+	get_prov_hash_in(node) = djb2_hash_n((uint8_t*)hash, 2*sizeof(uint64_t));
 	return 0;
 }
 
